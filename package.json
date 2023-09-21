@@ -1,0 +1,18 @@
+{
+  "name": "IframeExamples",
+  "version": "0.0.1",
+  "description": "embedded chat examples",
+  "main": "index.js",
+  "author": "gabriellsh",
+  "license": "MIT",
+  "scripts": {
+    "start": "yarn run supervisor ./src/server/app.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "node": "^20.6.0"
+  },
+  "devDependencies": {
+    "supervisor": "^0.12.0"
+  }
+}

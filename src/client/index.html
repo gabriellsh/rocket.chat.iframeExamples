@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <style>
+        iframe {
+            width: 100%;
+            height: 100vh;
+            border: none;
+        }
+    </style>
+    <!-- Go to home -->
+    <button id="home">Home</button>
+    <!-- Go to admin -->
+    <button id="admin">Admin</button>
+    <iframe src="http://localhost:3000"></iframe>
+
+    <script>
+        const adminButton = document.getElementById('admin');    
+        const homeButton = document.getElementById('home');
+        const iframe = document.querySelector('iframe');
+
+        const navigate = (path) => {
+            iframe.contentWindow.postMessage({
+                externalCommand: 'go',
+                path,
+            }, '*')
+        }
+
+        adminButton.addEventListener('click', () => {
+            navigate('/admin');
+        });
+
+        homeButton.addEventListener('click', () => {
+            navigate('/home');
+        });
+    </script>
+</body>
+</html>
