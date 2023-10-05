@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Embedded Rocket.Chat</title>
 </head>
 <body>
     <style>
         iframe {
             width: 100%;
-            height: 100vh;
+            height: 80vh;
             border: none;
         }
     </style>
@@ -18,12 +18,16 @@
     <button id="home">Home</button>
     <!-- Go to admin -->
     <button id="admin">Admin</button>
-    <iframe src="http://localhost:3000"></iframe>
+    <button id="login">Login</button>
+    <iframe src="http://localhost:3000/?layout=embedded"></iframe>
 
     <script>
-        const adminButton = document.getElementById('admin');    
+        const adminButton = document.getElementById('admin');
         const homeButton = document.getElementById('home');
+        const loginButton = document.getElementById('login');
         const iframe = document.querySelector('iframe');
+
+		const [username, password] = ['gab', 'gab']
 
         const navigate = (path) => {
             iframe.contentWindow.postMessage({
@@ -38,6 +42,42 @@
 
         homeButton.addEventListener('click', () => {
             navigate('/home');
+        });
+
+        loginButton.addEventListener('click', () => {
+            login();
+        });
+
+		// Login through API
+		// This login is being proxied by this server. If there's a need to call the API directly from the client,
+		// some API security settings must be changed. (API_Enable_CORs)
+        const login = async () => {
+            const result = await fetch('http://localhost:3003/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username,
+                    password,
+                }),
+            }).then(result => result.json());
+
+            const { authToken } = result.data;
+
+            iframe.contentWindow.postMessage({
+                event: 'login-with-token',
+                loginToken: authToken,
+            }, '*')
+
+			navigate('/channel/general?layout=embedded'); // This query string (layout=embedded) is not needed for every navigation, but behaviour is more consistent if passed around.
+		}
+
+        window.addEventListener('message', (event) => {
+			// Wait for client startup message to make sure the client is ready
+            if (event.data?.eventName === 'startup') {
+                login();
+            }
         });
     </script>
 </body>
