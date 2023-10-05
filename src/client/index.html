@@ -19,6 +19,7 @@
     <!-- Go to admin -->
     <button id="admin">Admin</button>
     <button id="login">Login</button>
+	<!-- For iframe to work properly in other URLs, `Restric access inside any iframe` setting should be disabled. -->
     <iframe src="http://localhost:3000/?layout=embedded"></iframe>
 
     <script>
@@ -28,6 +29,8 @@
         const iframe = document.querySelector('iframe');
 
 		const [username, password] = ['gab', 'gab']
+
+		// For `postMessage` to work, sending and receivin messages in iframe integration has to be enabled in settings.
 
         const navigate = (path) => {
             iframe.contentWindow.postMessage({
@@ -65,6 +68,7 @@
 
             const { authToken } = result.data;
 
+			// For login-with-token to work, iframe auth setting should be enabled.
             iframe.contentWindow.postMessage({
                 event: 'login-with-token',
                 loginToken: authToken,
